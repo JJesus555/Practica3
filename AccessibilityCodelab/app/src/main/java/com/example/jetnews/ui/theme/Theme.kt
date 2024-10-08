@@ -92,7 +92,6 @@ fun AppTheme(
         useDarkTheme -> DarkColors
         else -> LightColors
     }
-
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -103,7 +102,6 @@ fun AppTheme(
                 .isAppearanceLightStatusBars = useDarkTheme
         }
     }
-
     MaterialTheme(
         colorScheme = colors,
         content = content
