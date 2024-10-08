@@ -6,14 +6,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material3.Surface // Asegúrate de que este import esté presente
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp // Asegúrate de que este import esté presente
+import androidx.compose.ui.unit.dp
 import com.example.reply.data.LocalEmailsDataProvider
-import com.example.reply.ui.theme.AppTheme // Asegúrate de que esto esté importado
+import com.example.reply.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -23,16 +26,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            // Aquí recolectas el estado del ViewModel
             val uiState by viewModel.uiState.collectAsState()
 
-            // Aplica el tema a la app
             AppTheme {
-                Surface(
-                    tonalElevation = 5.dp // Verifica que estés usando dp correctamente
-                ) {
-                    ReplyApp(
-                        replyHomeUIState = uiState,
+                Surface {
+                    ReplyAppContent(
+                        uiState = uiState,
                         closeDetailScreen = {
                             viewModel.closeDetailScreen()
                         },
@@ -46,6 +45,37 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Composable
+fun ReplyAppContent(
+    uiState: ReplyHomeUIState,
+    closeDetailScreen: () -> Unit,
+    navigateToDetail: (Long) -> Unit
+) {
+    Column {
+        ReplyApp(
+            replyHomeUIState = uiState,
+            closeDetailScreen = closeDetailScreen,
+            navigateToDetail = navigateToDetail
+        )
+        ExampleText()
+    }
+}
+
+@Composable
+fun ExampleText() {
+    Column {
+        Text(
+            text = "Hello M3 theming",
+            style = MaterialTheme.typography.titleLarge
+        )
+
+        Text(
+            text = "You are learning typography",
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+}
+
 @Preview(
     uiMode = UI_MODE_NIGHT_YES,
     name = "DefaultPreviewDark"
@@ -56,13 +86,15 @@ class MainActivity : ComponentActivity() {
 )
 @Composable
 fun ReplyAppPreview() {
-    AppTheme { // Aplica el tema también en las vistas previas
-        ReplyApp(
-            replyHomeUIState = ReplyHomeUIState(
-                emails = LocalEmailsDataProvider.allEmails
-            ),
-            closeDetailScreen = {},
-            navigateToDetail = {}
-        )
+    AppTheme {
+        Surface {
+            ReplyAppContent(
+                uiState = ReplyHomeUIState(
+                    emails = LocalEmailsDataProvider.allEmails
+                ),
+                closeDetailScreen = {},
+                navigateToDetail = {}
+            )
+        }
     }
 }
